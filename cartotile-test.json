@@ -1,0 +1,42 @@
+{
+  "center": [
+    0,
+    0
+  ],
+  "glyphs": "https://ubukawa.github.io/style_test3/font/{fontstack}/{range}.pbf",
+  "layers": [
+    {
+      "id": "background",
+      "paint": {
+        "background-color": "#D6EBF5"
+      },
+      "type": "background"
+    },
+    {
+      "id": "bndline",
+      "maxzoom": 4,
+      "minzoom": 0,
+      "paint": {
+        "line-color": "#FAF9F6",
+        "line-width": 2        
+      },
+      "source": "v",
+      "source-layer": "bndl",
+      "type": "line"
+    }
+   ],
+  "site_root": "https://ubukawa.github.io/ArcGISAPI_test1",
+  "sources": {
+    "v": {
+      "attribution": "test, <img src='https://unopengis.github.io/watermark/watermark.png'>",
+      "maxzoom": 2,
+      "minzoom": 0,
+      "tiles": [
+        "https://UN-Geospatial.github.io/cartotile-plain-design/data/cartotile_v01/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector"
+    }
+  },
+  "sprite": "https://www.unvt-test.com:3000/sprite-un/sprite_S",
+  "version": 8
+}
