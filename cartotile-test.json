@@ -17,7 +17,7 @@
       "maxzoom": 4,
       "minzoom": 0,
       "paint": {
-        "line-color": "#FAF9F6",
+        "line-color": "#FF0000",
         "line-width": 2        
       },
       "source": "v",
