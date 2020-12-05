@@ -1,6 +1,5 @@
 {
     "version": 8,
-    "name": "My Style carto",
     "sources": {
         "v": {
             "type": "vector",
@@ -11,31 +10,6 @@
         }
     },
     "layers": [
-    {"id":"background","paint":{"background-color":["rgb",146, 171, 230]},"type":"background"},
-    {"id":"bnda","paint":{"fill-color":["rgb",250,250,250]},"source":"v","source-layer":"bnda","type":"fill"},  
-    {"id": "bndl_solid",  
-            "type": "line",
-            "source-layer": "bndl",
-            "source": "v",  
-            "filter": [
-                "any",
-                [
-                  "==",
-                  "BDYTYP",
-                  1
-                ],
-                [
-                  "==",
-                  "BDYTYP",
-                  0
-                ],
-                [
-                  "==",
-                  "BDYTYP",
-                  2
-                ]
-              ],
-            "paint": {"line-color": "rgba(77, 77, 77, 1)", "line-width": 0.8} 
-        }    
+    {"id":"bndl_solid","type":"line","source-layer":"bndl","source":"v","paint":{"line-color": "rgba(77, 77, 77, 1)", "line-width": 0.8} }    
     ]
 }‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍
