@@ -40,14 +40,14 @@
         var view = new MapView({
           container: "viewDiv",
           map: map,
-          center: [31.4,4.92], 
-          zoom: 2
+          center: [139.745433, 35.658581], 
+          zoom: 6
         });
 
         // スタイルファイルの JSON を参照してベクタータイル レイヤーを作成
         var vtLayer = new VectorTileLayer({
           url:
-            "cartotile-test.json",
+            "https://gist.githubusercontent.com/yozaw/63f5eb0b0d490778ce5082926a49e732/raw/a05d3d8e72ca26fbe02a45e86786f1a676cadc89/style.json",
         });
         
         // 作成したベクタータイル レイヤーをマップに追加
@@ -59,7 +59,7 @@
           attribution.widget.watch('attributionText', function(evt){ 
             updateAttr = setInterval(function(){
               attrdiv = document.getElementsByClassName('esri-attribution__sources')[0]
-              attrdiv.innerHTML = attribution.widget.attributionText + "test"
+              attrdiv.innerHTML = attribution.widget.attributionText + ", 国土地理院ベクトルタイル提供実験"
               clearInterval(updateAttr);
             }, 2);
           });
