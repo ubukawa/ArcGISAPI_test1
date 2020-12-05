@@ -1,0 +1,62 @@
+{
+    "version": 8,
+    "name": "My Style carto",
+    "sources": {
+        "v": {
+            "type": "vector",
+            "tiles": [
+                "https://UN-Geospatial.github.io/cartotile-plain-design/data/cartotile_v01/{z}/{x}/{y}.pbf"
+                ],
+            "attribution": "carto"
+        }
+    },
+    "layers": [
+        {
+            "id": "bnda",  // any id
+            "type": "fill",
+            "source-layer": "bnda",
+            "source": "v",  // ベクター タイル ソース
+            "paint": {"fill-color": "rgba(237, 237, 237, 1)"}
+        },
+        {
+            "id": "bndl_solid",  
+            "type": "line",
+            "source-layer": "bndl",
+            "source": "v",  
+            "filter": [
+                "any",
+                [
+                  "==",
+                  "BDYTYP",
+                  1
+                ],
+                [
+                  "==",
+                  "BDYTYP",
+                  0
+                ],
+                [
+                  "==",
+                  "BDYTYP",
+                  2
+                ]
+              ],
+            "paint": {"line-color": "rgba(77, 77, 77, 1)", "line-width": 0.8} 
+        },
+        {
+            "id": "bndl_dashed",  
+            "type": "line",
+            "source-layer": "bndl",
+            "source": "v",  
+            "filter": [
+                "any",
+                [
+                  "==",
+                  "BDYTYP",
+                  3
+                ]
+              ],
+            "paint": {"line-color": "rgba(77, 77, 77, 1)", "line-dasharray": [3,2], "line-width": 0.8} 
+        }        
+    ]
+}‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍‍
