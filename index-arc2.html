@@ -109,7 +109,7 @@
                     thumbnailUrl: "https://cyberjapandata.gsi.go.jp/xyz/std/12/3637/1612.png"
                 });     
 
-                
+              
                 const stdVMap = new Basemap({
                     baseLayers:[new VectorTileLayer({
                       url: "https://ubukawa.github.io/ArcGISAPI_test1/cartotile-test.json",
@@ -141,7 +141,7 @@
                 
                 // Basemap Sources を LocalBasemapsSource 
                 const localSource = new LocalBasemapsSource({
-                    basemaps: [esriTopo, stdMap, stdVMap]
+                    basemaps: [stdMap, stdVMap, esriTopo]
                 });
                 
                 // Basemap Gallery Widget に LocalBasemapsSource を設定
