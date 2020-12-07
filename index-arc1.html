@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>VectorTileLayer</title>
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.10/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.10/"></script>
+
+    <script>
+  require([
+      "esri/config",
+      "esri/Map",
+      "esri/portal/Portal",
+      "esri/views/MapView",
+      "esri/Basemap",
+      "esri/widgets/Expand",
+      "esri/widgets/Search",
+      "esri/widgets/BasemapGallery",
+      "esri/widgets/BasemapGallery/support/LocalBasemapsSource",
+      "esri/layers/WebTileLayer",
+      "esri/layers/TileLayer",
+      "esri/layers/VectorTileLayer",
+      "esri/intl",
+      "dojo/domReady!"
+    ], function(
+        esriConfig,
+        Map,
+        Portal,
+        MapView,
+        Basemap,
+        Expand,
+        Search,
+        BasemapGallery,
+        LocalBasemapsSource,
+        WebTileLayer,
+        TileLayer,
+        VectorTileLayer,
+        intl
+    ) {
+
+        const testMap = new Basemap({
+              baseLayers:[new VectorTileLayer({
+                url: "https://ubukawa.github.io/ArcGISAPI_test1/cartotile-test.json",
+                copyright: "testtestteset"
+              })],
+              title: "test",
+              id: "testMap"
+         });
+
+        // ArcGIS Online のキャンバス (ライト グレー) ベースマップを表示するマップを作成
+        var map = new Map({basemap:"testMap"});
+
+
+        
+//        // 作成したベクタータイル レイヤーをマップに追加
+//        map.add(vtLayer);
+
+
+
+        // マップと中心座標とズーム率を指定してマップビューを作成
+        var view = new MapView({
+          container: "viewDiv",
+          map: map,
+          center: [31.4,4.92], 
+          zoom: 2
+        });
+
+
+        
+        
+        view.watch('ready', function(){
+          var attribution = view.ui._components[0];
+          attribution.widget.watch('attributionText', function(evt){ 
+            updateAttr = setInterval(function(){
+              attrdiv = document.getElementsByClassName('esri-attribution__sources')[0]
+              attrdiv.innerHTML = attribution.widget.attributionText + "test"
+              clearInterval(updateAttr);
+            }, 2);
+          });
+        });
+        
+      });
+    </script>
+  </head>
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>
