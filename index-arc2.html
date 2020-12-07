@@ -110,13 +110,13 @@
                 });     
 
               
-                const stdVMap = new Basemap({
+                const cartoVMap = new Basemap({
                     baseLayers:[new VectorTileLayer({
                       url: "https://ubukawa.github.io/ArcGISAPI_test1/cartotile-test.json",
                       copyright: "Carto tile - test"
                     })],
                     title: "Carto tile - test",
-                    id: "stdvmap"
+                    id: "cartoVmap"
                 });                
 
                
@@ -141,7 +141,7 @@
                 
                 // Basemap Sources を LocalBasemapsSource 
                 const localSource = new LocalBasemapsSource({
-                    basemaps: [stdMap, stdVMap, esriTopo]
+                    basemaps: [stdMap, cartoVMap, esriTopo]
                 });
                 
                 // Basemap Gallery Widget に LocalBasemapsSource を設定
