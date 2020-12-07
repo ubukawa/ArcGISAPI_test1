@@ -1,32 +1,25 @@
 ﻿<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta
-      name="viewport"
-      content="initial-scale=1,maximum-scale=1,user-scalable=no"
-    />
-    <title>VectorTileLayer</title>
-    <style>
-      html,
-      body,
-      #viewDiv {
-        padding: 0;
-        margin: 0;
-        height: 100%;
-        width: 100%;
-      }
-    </style>
 
-    <link
-      rel="stylesheet"
-      href="https://js.arcgis.com/4.10/esri/themes/light/main.css"
-    />
-    <script src="https://js.arcgis.com/4.10/"></script>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>test</title>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.16/esri/themes/dark/main.css" />
+  <script src="https://js.arcgis.com/4.16/"></script>
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
 
-    <script>
-  require([
+  <script>
+    require([
       "esri/config",
       "esri/Map",
       "esri/portal/Portal",
@@ -56,52 +49,225 @@
         VectorTileLayer,
         intl
     ) {
-
-        const testMap = new Basemap({
-              baseLayers:[new VectorTileLayer({
-                url: "https://ubukawa.github.io/ArcGISAPI_test1/cartotile-test.json",
-                copyright: "testtestteset"
-              })],
-              title: "test",
-              id: "testMap"
-         });
-
-        // ArcGIS Online のキャンバス (ライト グレー) ベースマップを表示するマップを作成
-        var map = new Map({basemap:"testMap"});
-
-
+        // ******************************************************************************
+        // https://community.esri.com/t5/arcgis-%E9%96%8B%E7%99%BA%E8%80%85%E3%82%B3%E3%83%9F%E3%83%A5%E3%83%8B%E3%83%86%E3%82%A3-documents/%E5%9C%B0%E7%90%86%E9%99%A2%E5%9C%B0%E5%9B%B3vector-%E4%BB%AE%E7%A7%B0-%E3%82%92arcgis-%E3%81%A7%E8%A1%A8%E7%A4%BA%E3%81%97%E3%81%A6%E3%81%BF%E3%81%BE%E3%81%97%E3%81%9F-%E7%AC%AC2%E5%BC%BE/ta-p/906742
+        // ******************************************************************************
         
-//        // 作成したベクタータイル レイヤーをマップに追加
-//        map.add(vtLayer);
-
-
-
-        // マップと中心座標とズーム率を指定してマップビューを作成
-        var view = new MapView({
-          container: "viewDiv",
-          map: map,
-          center: [31.4,4.92], 
-          zoom: 2
-        });
-
-
+        // UI
+        intl.setLocale("en");
         
-        
-        view.watch('ready', function(){
-          var attribution = view.ui._components[0];
-          attribution.widget.watch('attributionText', function(evt){ 
-            updateAttr = setInterval(function(){
-              attrdiv = document.getElementsByClassName('esri-attribution__sources')[0]
-              attrdiv.innerHTML = attribution.widget.attributionText + "test"
-              clearInterval(updateAttr);
-            }, 2);
-          });
+        // culture and region
+        const selfUrl = "https://www.arcgis.com/sharing/rest/portals/self";
+        esriConfig.request.interceptors.push({
+          urls: selfUrl,
+          before: function(params) {
+            if (params.requestOptions.query) {
+                switch(intl.getLocale())
+                {
+                    case "en":
+                        params.requestOptions.query.culture="en";
+                        params.requestOptions.query.region="US";
+                        break;
+                    case "ja":
+                        params.requestOptions.query.culture="ja";
+                        params.requestOptions.query.region="JP";
+                        break;
+                    case "de":
+                        params.requestOptions.query.culture="de";
+                        params.requestOptions.query.region="DE";
+                        break;
+                    case "fr":
+                        params.requestOptions.query.culture="fr";
+                        params.requestOptions.query.region="FR";
+                        break;
+                }
+            }
+          }
         });
         
-      });
-    </script>
-  </head>
-  <body>
-    <div id="viewDiv"></div>
-  </body>
+        // portal
+        const portal = new Portal();
+        //portal.authMode = "immediate"; // may need to login
+        
+        portal
+            .load()
+            .then(function() {
+                const basemap = portal.useVectorBasemaps
+                    ? portal.defaultVectorBasemap
+                    : portal.defaultBasemap;
+                const map = new Map({
+                    basemap: basemap
+                    //basemap: "osm"
+                });
+                const view = new MapView({
+                    container: "viewDiv",
+                    map: map,
+                    center: [0, 0], 
+                    zoom: 2,
+                    constraints: { 
+                        minZoom: 0,
+                        maxZoom: 4
+                    }
+                });
+                
+                // Esri Topo Layers
+                //const esriTopo = new Basemap({
+                //    baseLayers: [new TileLayer({
+                //      url: "https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer?f=json"
+                //    })],
+                //    title: "Esri - Topo",
+                //    id: "Topo",
+                //    thumbnailUrl:"https://js.arcgis.com/4.13/esri/images/basemap/topo.jpg"
+                //});
+                const esriTopo = basemap;
+                esriTopo.thumbnailUrl = "https://js.arcgis.com/4.16/esri/images/basemap/topo.jpg";
+                
+                /******************************************************************************
+                地理院タイル（ベースマップ）のページから情報を整理
+                 https://maps.gsi.go.jp/development/ichiran.html#std
+                
+                ※ 実装時には、URL の /{z}/{x}/{y} は /{level}/{col}/{row} に変更
+                
+                標準地図：レベル 5-18
+                 urlTemplate: "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png"
+                 copyright: "地理院タイル"
+                 title: "標準地図"
+                 thumbnailUrl: "https://cyberjapandata.gsi.go.jp/xyz/std/12/3637/1612.png"
+                
+                淡色地図：レベル 5-18
+                 urlTemplate: "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
+                 copyright: "地理院タイル"
+                 title: "淡色地図"
+                 thumbnailUrl: "https://cyberjapandata.gsi.go.jp/xyz/pale/12/3637/1612.png"
+                
+                English：レベル 5-11
+                 urlTemplate: "https://cyberjapandata.gsi.go.jp/xyz/english/{z}/{x}/{y}.png"
+                 copyright: "地理院タイル"         
+                 title: "English"
+                 thumbnailUrl: "https://cyberjapandata.gsi.go.jp/xyz/english/10/909/403.png"
+                
+                写真：レベル 2-18
+                 urlTemplate: "https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg"
+                 copyright: "地理院タイル"
+                 title: 写真
+                 thumbnailUrl: "https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/16/58274/25716.jpg"  
+                ******************************************************************************/
+                
+                const stdMap = new Basemap({
+                    baseLayers:[new WebTileLayer({
+                      urlTemplate: "https://cyberjapandata.gsi.go.jp/xyz/std/{level}/{col}/{row}.png",
+                      copyright: "地理院タイル （https://maps.gsi.go.jp/development/ichiran.html）"
+                    })],
+                    title: "地理院タイル - 標準地図",
+                    id: "stdmap",
+                    thumbnailUrl: "https://cyberjapandata.gsi.go.jp/xyz/std/12/3637/1612.png"
+                });      
+                
+                const paleMap = new Basemap({
+                    baseLayers:[new WebTileLayer({
+                        urlTemplate: "https://cyberjapandata.gsi.go.jp/xyz/pale/{level}/{col}/{row}.png",
+                        copyright: "地理院タイル （https://maps.gsi.go.jp/development/ichiran.html）"
+                    })],
+                    title: "地理院タイル - 淡色地図",
+                    id: "palemap",
+                    thumbnailUrl: "https://cyberjapandata.gsi.go.jp/xyz/pale/12/3637/1612.png"
+                });    
+                
+                const seamlessPhoto = new Basemap({
+                    baseLayers:[new WebTileLayer({
+                        urlTemplate: "https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{level}/{col}/{row}.jpg",
+                        copyright: "地理院タイル （https://maps.gsi.go.jp/development/ichiran.html）"
+                    })],
+                    title: "地理院タイル - 写真",
+                    id: "seamlessphoto",
+                    thumbnailUrl:"https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/16/58274/25716.jpg"
+                });
+                
+                const stdVMap = new Basemap({
+                    baseLayers:[new VectorTileLayer({
+                      url: "https://kataya.github.io/gsivectortile-mapbox-gl-js/std_edit.json",
+                      copyright: "地理院地図Vector（仮称） （https://maps.gsi.go.jp/vector/）"
+                    })],
+                    title: "地理院ベクトルタイル - 標準地図",
+                    id: "stdvmap",
+                    thumbnailUrl: "https://cyberjapandata.gsi.go.jp/xyz/std/12/3637/1612.png"
+                });
+                
+                const paleVMap = new Basemap({
+                    baseLayers:[new VectorTileLayer({
+                      url: "https://kataya.github.io/gsivectortile-mapbox-gl-js/pale_edit.json",
+                      copyright: "地理院地図Vector（仮称） （https://maps.gsi.go.jp/vector/）"
+                    })],
+                    title: "地理院ベクトルタイル - 淡色地図",
+                    id: "palevmap",
+                    thumbnailUrl: "https://cyberjapandata.gsi.go.jp/xyz/pale/12/3637/1612.png"
+                });
+                
+                const blankVMap = new Basemap({
+                    baseLayers:[new VectorTileLayer({
+                      url: "https://kataya.github.io/gsivectortile-mapbox-gl-js/blank_edit.json",
+                      copyright: "地理院地図Vector（仮称） （https://maps.gsi.go.jp/vector/）"
+                    })],
+                    title: "地理院ベクトルタイル - 白地図",
+                    id: "blankvmap",
+                    thumbnailUrl: "https://cyberjapandata.gsi.go.jp/xyz/blank/12/3637/1612.png"
+                });
+                
+                // Basemap Sources を LocalBasemapsSource に設定
+                const localSource = new LocalBasemapsSource({
+                    basemaps: [esriTopo, stdMap, paleMap, seamlessPhoto, stdVMap, paleVMap, blankVMap]
+                });
+                
+                // Basemap Gallery Widget に LocalBasemapsSource を設定
+                const basemapGallery = new BasemapGallery({
+                    view: view,
+                    container: document.createElement("div"),
+                    source: localSource
+                });
+                
+                // Basemap Gallery Widget – Expand Button
+                const bgExpand = new Expand({
+                    view: view,
+                    content: basemapGallery
+                });
+                view.ui.add(bgExpand, "bottom-left");
+                
+                const search = new Search({ view: view });
+                view.ui.add(search, "top-right");
+                
+                const coordsWidget = document.createElement("div");
+                coordsWidget.id = "coordsWidget";
+                coordsWidget.className = "esri-widget esri-component";
+                coordsWidget.style.padding = "7px 15px 5px";
+                view.ui.add(coordsWidget, "bottom-right");
+            
+                // lat, lon, zoom and scale の更新するfunction を定義
+                function showCoordinates(pt) {
+                    let coords = "Lat/Lon " + pt.latitude.toFixed(3) + " " + pt.longitude.toFixed(3) +
+                                " | Scale 1:" + Math.round(view.scale * 1) / 1 +
+                                " | Zoom " + view.zoom;
+                    coordsWidget.innerHTML = coords;
+                }
+            
+                // view の動作がが終了したタイミングで中心座標を表示するためのイベントを追加 （例えば zoom, pan などのイベント）
+                view.watch(["stationary"], function() {
+                    showCoordinates(view.center);
+                });
+                
+                // クリックやムーブ時のマウスの座標を表示するためにイベントを追加
+                view.on(["pointer-down","pointer-move"], function(evt) {
+                    showCoordinates(view.toMap({ x: evt.x, y: evt.y }));
+                });
+                
+            })
+            .catch(function(error) {
+                console.warn(error);
+            });
+        });
+  </script>
+</head>
+<body>
+  <div id="viewDiv"></div>
+</body>
+
 </html>
